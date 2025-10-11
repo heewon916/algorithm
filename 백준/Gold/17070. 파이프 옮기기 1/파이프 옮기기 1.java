@@ -1,199 +1,117 @@
 import java.io.*;
-import java.util.*; 
+import java.util.*;
+
 public class Main {
-	static int N; 
+	static int N;
 	static int[][] map;
-	// 옆으로 밀거나, 아래로 밀거나, 대각선으로 밀거나 
+	// 옆으로(0), 아래로(1), 대각선으로(2)
 	static int[] di = {0, 1, 1};
-	static int[] dj = {1, 0, 1}; 
-	static class Pipe{
-		int sx, sy, dx, dy; 
-		int direction; 
-		Pipe(int sx, int sy, int d){
-			this.sx = sx; 
-			this.sy = sy; 
-			this.dx = sx+di[d];
-			this.dy = sy+dj[d];
+	static int[] dj = {1, 0, 1};
+	static int count = 0;
+
+	// 기존 Pipe 클래스 및 다른 메서드는 그대로 유지합니다.
+	static class Pipe {
+		int sx, sy, dx, dy;
+		int direction;
+
+		Pipe(int sx, int sy, int d) {
+			this.sx = sx;
+			this.sy = sy;
+			this.dx = sx + di[d];
+			this.dy = sy + dj[d];
 			this.direction = d;
 		}
+
 		@Override
 		public String toString() {
 			return "시작점: (" + sx + ", " + sy + ") 끝점: (" + dx + ", " + dy + ") 방향 =" + direction;
 		}
-		
 	}
-	static int count = 0; 
+
 	static boolean outOfBound(int x, int y) {
-		if(x<0 || x>=N || y<0 || y>=N) return true; 
-		else return false; 
+		return x < 0 || x >= N || y < 0 || y >= N;
 	}
+
 	static boolean isWall(int x, int y) {
-		if(map[x][y] == 1) return true; 
-		else return false; 
+		return map[x][y] == 1;
 	}
-	static boolean isBlank(int sx, int sy) {
-		for(int d=0; d<3; d++) {
-			int nx = sx+di[d]; 
-			int ny = sy+dj[d]; 
-			if(map[nx][ny] != 0) return false; 
-		}
-		return true; 
-	}
+
+	/*
+	 * isBlank 메서드는 대각선 이동 가능 여부를 판단하는 로직에 직접 통합되어 더 이상 필요하지 않습니다.
+	 * 이는 코드를 더 명확하고 안전하게 만듭니다. (자세한 설명은 아래 '주요 변경 사항' 참고)
+	 */
+
 	static void dfs(Pipe p) {
-		if(p.dx == N-1 && p.dy == N-1) {
-			count++; 
-			return; 
+		// Base Case: 파이프의 끝점이 (N-1, N-1)에 도달하면 경우의 수 1 증가
+		if (p.dx == N - 1 && p.dy == N - 1) {
+			count++;
+			return;
 		}
-		int dx = p.dx; 
-		int dy = p.dy; 
-		int dir = p.direction; 
-//		System.out.println("현재 상태: " + p.toString());
-		int nx_s = dx; 
-		int ny_s = dy; 
-		int nx_d, ny_d; 
-		if(dir == 0) {
-			// 옆으로 밀거나
-			nx_d = nx_s;
-			ny_d = ny_s+1;  
-			if(outOfBound(nx_s, ny_s) || outOfBound(nx_d, ny_d) || isWall(nx_s, ny_s) || isWall(nx_d, ny_d)) {
-				// do nothing 
-//				System.out.println("--- 1. 옆으로 밀기 불가능 ---");
-			}else {
-				Pipe np = new Pipe(nx_s, ny_s, 0); 
-//				System.out.println("1. 옆으로 밉니다.");
-//				System.out.println("=> 다음 상태: " + np.toString());
-				dfs(np);
+
+		// 현재 파이프의 끝점을 다음 이동의 시작점으로 사용
+		int sx = p.dx;
+		int sy = p.dy;
+
+		// --- [1] 가로로 이동 (새 방향: 0) ---
+		// 현재 파이프가 가로(0) 또는 대각선(2) 상태일 때만 가로로 이동 가능
+		if (p.direction == 0 || p.direction == 2) {
+			int ndx = sx + di[0];
+			int ndy = sy + dj[0];
+			
+			// 다음 칸이 범위 안이고 벽이 아니면 이동
+			if (!outOfBound(ndx, ndy) && !isWall(ndx, ndy)) {
+				dfs(new Pipe(sx, sy, 0));
 			}
-			// 대각선으로 돌리거나
-			nx_d = dx+1;
-			ny_d = dy+1;
-			if(outOfBound(nx_s, ny_s) || outOfBound(nx_d, ny_d) 
-					|| isWall(nx_s, ny_s) || isWall(nx_d, ny_d) 
-					|| !isBlank(nx_s, ny_s)) {
-				// do nothing 
-//				System.out.println("--- 3. 대각선 불가능 ---");
-			}else {
-				Pipe np = new Pipe(nx_s, ny_s, 2); 
-//				System.out.println("3. 대각선으로 돌린다.");
-//				System.out.println("=> 다음 상태: " + np.toString());
-				dfs(np);
+		}
+
+		// --- [2] 세로로 이동 (새 방향: 1) ---
+		// 현재 파이프가 세로(1) 또는 대각선(2) 상태일 때만 세로로 이동 가능
+		if (p.direction == 1 || p.direction == 2) {
+			int ndx = sx + di[1];
+			int ndy = sy + dj[1];
+
+			// 다음 칸이 범위 안이고 벽이 아니면 이동
+			if (!outOfBound(ndx, ndy) && !isWall(ndx, ndy)) {
+				dfs(new Pipe(sx, sy, 1));
 			}
-		}else if(dir == 1) {
-			// 아래로 밀거나 
-			nx_d = nx_s+1; 
-			ny_d = ny_s;  
-			if(outOfBound(nx_s, ny_s) || outOfBound(nx_d, ny_d) || isWall(nx_s, ny_s) || isWall(nx_d, ny_d)) {
-				// do nothing 
-//				System.out.println("--- 2. 아래로 밀기 불가능 ---");
-			}else {
-				Pipe np = new Pipe(nx_s, ny_s, 1); 
-//				System.out.println("2. 아래로 민다.");
-//				System.out.println("=> 다음 상태: " + np.toString());
-				dfs(np);
-			}
-			// 대각선으로 회전하거나
-			nx_d = nx_s+1; 
-			ny_d = ny_s+1; 
-			if(outOfBound(nx_s, ny_s) || outOfBound(nx_d, ny_d) 
-					|| isWall(nx_s, ny_s) || isWall(nx_d, ny_d)
-					|| !isBlank(nx_s, ny_s)) {
-				// do nothing
-				// System.out.println("--- 3. 대각선 불가능 ---");
-			}else {
-				Pipe np = new Pipe(nx_s, ny_s, 2); 
-//				System.out.println("3. 대각선으로 돌린다.");
-//				System.out.println("=> 다음 상태: " + np.toString());
-				dfs(np);
-			}
-		}else if(dir == 2) {
-			// 가로로 회전하거나 
-			nx_d = nx_s; 
-			ny_d = ny_s+1; 
-			if(outOfBound(nx_s, ny_s) || outOfBound(nx_d, ny_d) || isWall(nx_s, ny_s) || isWall(nx_d, ny_d)) {
-				// do nothing 
-//				System.out.println("--- 1. 옆으로 밀기 불가능 ---");
-			}else {
-				Pipe np = new Pipe(nx_s, ny_s, 0); 
-//				System.out.println("1. 옆으로 돌린다.");
-//				System.out.println("=> 다음 상태: " + np.toString());
-				dfs(np);
-			}
-			// 세로로 회전하면서 밀거나 
-			nx_d = nx_s+1;
-			ny_d = ny_s;
-			if(outOfBound(nx_s, ny_s) || outOfBound(nx_d, ny_d) || isWall(nx_s, ny_s) || isWall(nx_d, ny_d)) {
-				// do nothing 
-//				System.out.println("--- 2. 아래로 밀기 불가능 ---");
-			}else {
-				Pipe np = new Pipe(nx_s, ny_s, 1); 
-//				System.out.println("2. 아래로 민다.");
-//				System.out.println("=> 다음 상태: " + np.toString());
-				dfs(np);
-			}
-			// 대각선으로 밀거나
-			nx_s = dx; 
-			ny_s = dy; 
-			nx_d = nx_s+1; 
-			ny_d = ny_s+1;
-			if(outOfBound(nx_s, ny_s) || outOfBound(nx_d, ny_d) 
-					|| isWall(nx_s, ny_s) || isWall(nx_d, ny_d)
-					|| !isBlank(nx_s, ny_s)) {
-				// do nothing 
-//				System.out.println("--- 3. 대각선 불가능 ---");
-			}else {
-//				System.out.println("3. 대각선으로 돌린다.");
-				Pipe np = new Pipe(nx_s, ny_s, 2); 
-//				System.out.println("=> 다음 상태: " + np.toString());
-				dfs(np);
-			}
+		}
+
+		// --- [3] 대각선으로 이동 (새 방향: 2) ---
+		// 대각선 이동은 현재 방향과 상관없이 시도 가능
+		// 단, 이동에 필요한 3칸(가로, 세로, 대각선 도착점)이 모두 비어있어야 함
+		int ndx = sx + di[2];
+		int ndy = sy + dj[2];
+
+		// 대각선 도착 지점이 범위를 벗어나는지 먼저 확인하고,
+		// 나머지 필수 공간이 벽이 아닌지 확인
+		if (!outOfBound(ndx, ndy) && !isWall(ndx, ndy) && !isWall(sx, sy + 1) && !isWall(sx + 1, sy)) {
+			dfs(new Pipe(sx, sy, 2));
 		}
 	}
-	public static void main(String[] args) throws Exception{
+
+	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = null; 
-		
+		StringTokenizer st;
+
 		st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(st.nextToken());
-		
+
 		map = new int[N][N];
-		for(int i=0; i<N; i++) {
+		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine(), " ");
-			for(int j=0; j<N; j++) {
+			for (int j = 0; j < N; j++) {
 				map[i][j] = Integer.parseInt(st.nextToken());
 			}
 		}
-		
-		// 가로 방향: d = 0 
-		// 세로 방향: d = 1
-		// 대각선 방향: d = 2
+        
+        // 최종 도착지가 벽이면 어떤 방법으로도 도달 불가능하므로 미리 종료
+		if (map[N - 1][N - 1] == 1) {
+			System.out.println(0);
+			return;
+		}
+        
 		Pipe p = new Pipe(0, 0, 0);
 		dfs(p);
 		System.out.println(count);
 	}
-
 }
-/*
-배열 크기 n 
-정사각형 배열
-파이프 처음 방향 우 
-
-1인 칸에는 있을 수 없음 
-한쪽 끝이 n-1, n-1에 도달해야됨 
-그 방법의 개수를 구해야됨 
-
-x,y에 대해서 
-	가로로 밀면 0,1
-	대각선으로 밀면 1,1
-	아래로 밀면 1,0 
-
-시작점, 끝점이 있으면 
-항상 시작점 <- 끝점이 되고, 끝점 <- 어느 방향으로 이동할거냐에 따라 달라짐 
-내 방향: 
-내 현재 위치가 i,j라고 하면 
-가로이면 다음 시작점은 
-	밀거나 -> i, j+1 (방향 유지)/ 끝점 = 시작점 + 우방향 
-	대각선 -> i, j+1 (대각선 방향)/ 끝점 = 시작점 + 대각선 방향 
-세로이면 
-	아래로 밀거나 
-대각선이면 
-*/
