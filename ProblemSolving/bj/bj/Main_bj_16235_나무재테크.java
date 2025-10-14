@@ -9,17 +9,15 @@ public class Main_bj_16235_나무재테크 {
     static class Tree{
         int age; 
         int r, c; 
-        boolean alive;
         public Tree(int r, int c, int age) {
             super();
             this.age = age;
             this.r = r;
             this.c = c;
-            this.alive = true;
         }
 		@Override
 		public String toString() {
-			return "나무정보: (" + r + ", " + c + ") 나이: " + age + ", 살아있는가? " + alive; 
+			return "나무정보: (" + r + ", " + c + ") 나이: " + age ;
 		} 
 
     }
@@ -83,89 +81,66 @@ public class Main_bj_16235_나무재테크 {
 	    int year = K; 
 	 
 	    while(year > 0) {
-	        // 봄 
-	    	System.out.println("---봄---");
 	        for(int i=0; i<N; i++) {
 	            for(int j=0; j<N; j++) {
-	            	PriorityQueue<Tree> trees = treeMap[i][j]; 
-	            	if(trees.size() == 0) continue; 
-	            	System.out.println("현재 위치: " + i + ", " + j);
-	            	int nut = map[i][j]; 
-	            	for(Tree t : trees) {
-	            		System.out.println(t);
-	            		if(t.age > nut || nut == 0) {
-	            			System.out.println("-> 죽음");
-	            			t.alive = false; 
+	            	PriorityQueue<Tree> aliveTemp = new PriorityQueue<>((o1, o2) -> o1.age - o2.age); 
+	            	int deadNutrient = 0; 
+	            	/**
+	            	 * 죽었으면 버려야지 그대로 PQ에 쌓아뒀었음. 
+	            	 * 그리고 alive = false;로 굳이 표현하지 않아도 되는게 죽은 나무들에 대해서는 나이만 관심사가 있었음 
+	            	 * 그래서 따로 리스트로 만들어서 안 빼도 됐음
+	            	 * 
+	            	 * 그리고 여기서는 정보 업데이트가 계속 발생하니까 굳이 따로 변수에 map[i][j]를 담지 말고 
+	            	 * 바로바로 처리하는 게 훨 깔끔함 
+	            	 */
+	            	while(!treeMap[i][j].isEmpty()) {
+	            		Tree t = treeMap[i][j].poll(); 
+	            		if(t.age > map[i][j]) {
+	            			deadNutrient += t.age/2; 
 	            		}else {
-	            			System.out.println(nut + ", "  + t.age);
-	            			nut = nut - t.age > 0 ? nut - t.age : 0; 
-	            			System.out.println(nut);
-	            			map[i][j] = nut; 
-	            			System.out.println("나무에게 양분을 주고 나서: " + map[i][j]);
+	            			map[i][j] -= t.age; 
 	            			t.age++; 
-	            			System.out.println("양분 먹음 -> 남은 양분: " + map[i][j] + " / 나이: " + t.age);
+	            			aliveTemp.add(t);
 	            		}
 	            	}
-	            	System.out.println("- 남은 양분 : " + map[i][j]);
+	            	/**
+	            	 * treeMap[i][j] = aliveTemp; 보다 addAll이 훨씬 안정적이다.
+	            	 */
+	            	map[i][j] += deadNutrient; 
+	            	treeMap[i][j].addAll(aliveTemp);
 	            }
 	        }
-		    // 여름 
-	        System.out.println("---여름---");
 	        for(int i=0; i<N; i++) {
 	        	for(int j=0; j<N; j++) {
-	        		System.out.println("현재 위치: " + i + ", " + j);
-	        		PriorityQueue<Tree> trees = treeMap[i][j]; 
-	            	if(trees.size() == 0) continue; 
-	            	for(Tree t : trees) {
-	            		if(t.alive) continue; 
-	            		map[i][j] += t.age/2; 
-	            		System.out.println("- 양분 추가: " + (t.age/2));
- 	            	}
-	        	}
-	        }
-	        
-		    // 가을 
-	        System.out.println("---가을---");
-	        for(int i=0; i<N; i++) {
-	        	for(int j=0; j<N; j++) {
-	        		System.out.println("현재 위치: " + i + ", " + j);
-	        		PriorityQueue<Tree> trees = treeMap[i][j]; 
-	        		if(trees.size() == 0) continue; 
-	        		ArrayList<Tree> modify = new ArrayList<>(); 
-	        		for(Tree t: trees) {
+	        		/**
+	        		 * 주의해야 했던 점은 바로 PQ에서 값을 바꿔버리면 수정과 동시에 접근하려는 문제가 발생한다. 
+	        		 * 따라서 안전하게 복사본을 만들어서 거기서 spread해도 문제가 없으니 그렇게 하자 
+	        		 */
+	        		ArrayList<Tree> modify = new ArrayList<>(treeMap[i][j]);  // 복사본 만든 거임 
+	        		for(Tree t: modify) {
 	        			if(t.age%5 == 0) {
-	        				modify.add(t);
+	        				spread(t.r, t.c);
 	        			}
 	        		}
-	        		for(Tree t: modify) {
-	        			spread(t.r, t.c);
-	        		}
 	        	}
 	        }
-		    // 겨울 
-	        System.out.println("---겨울---");
+
 	        for(int i=0; i<N; i++) {
 	        	for(int j=0; j<N; j++) {
 	        		map[i][j] += nutrient[i][j]; 
-	        		System.out.print(map[i][j]+ " ");
 	        	}
-	        	System.out.println();
 	        }
 	        year--; 
 	    }
 	    
 	    for(int i=0; i<N; i++) {
 	    	for(int j=0; j<N; j++) {
-	    		PriorityQueue<Tree> t = treeMap[i][j];
-	    		if(t.size() == 0) continue; 
-	    		for(Tree tree: t) {
-	    			if(tree.alive) aliveCount++; 
-	    		}
+	    		aliveCount += treeMap[i][j].size(); 
 	    	}
 	    }
 	    System.out.println(aliveCount);
 	    long t2 = System.currentTimeMillis(); 
-	    System.out.println((t2-t1)+"ms");
+//	    System.out.println((t2-t1)+"ms");
     }	
     
 }
