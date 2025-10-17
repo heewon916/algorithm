@@ -1,0 +1,27 @@
+-- 코드를 작성해주세요
+# 각 세대별 자식이 없는 개체의 수, 세대를 출력하기 
+# 세대 오름차순 정렬 
+# 모든 세대 - 자식이 없는 개체가 1개 이상
+
+WITH RECURSIVE GENERATION AS (
+    SELECT ID, PARENT_ID, 1 AS GEN
+    FROM ECOLI_DATA 
+    WHERE PARENT_ID IS NULL 
+    
+    UNION ALL 
+    
+    SELECT CHILD.ID, 
+        CHILD.PARENT_ID, 
+        PARENT.GEN+1
+    FROM ECOLI_DATA CHILD, GENERATION PARENT 
+    WHERE CHILD.PARENT_ID = PARENT.ID 
+)
+
+
+# 나보다 아랫 세대의 GEN에서 나를 부모로 삼고 있는 ID가 없으면 자식이 없다고 볼 수 있다. 
+# 나를 PARENT_ID로 삼고 있지 않다면 
+
+SELECT COUNT(ID) AS COUNT, GEN AS GENERATION
+FROM GENERATION 
+WHERE ID NOT IN (SELECT DISTINCT PARENT_ID FROM GENERATION WHERE PARENT_ID IS NOT NULL)
+GROUP BY GEN;
