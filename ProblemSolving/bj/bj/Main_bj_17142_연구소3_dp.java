@@ -2,10 +2,10 @@ package bj;
 
 import java.io.*; 
 import java.util.*; 
-public class Main_bj_17142_연구소3 {
+public class Main_bj_17142_연구소3_dp {
 	static int[][] map; 
 	static int N, M; 
-	static boolean[][] done; 
+	// static boolean[][] done; 
 	static ArrayList<Virus> list; 
 	static int[] b; 
 	static int emptyCount = 0; 
@@ -47,7 +47,14 @@ public class Main_bj_17142_연구소3 {
 			for(int i=0; i<b.length; i++) {
 				if(b[i] == 1) virus.add(list.get(i));
 			}
-			bfs(virus);
+			/**
+			 * ++ emptyCount가 0이면 굳이 연산할 필요가 없으므로 바로 minTime 0으로 설정 
+			 */
+			if(emptyCount == 0) {
+				minTime = Math.min(minTime, 0);
+			}else {
+				bfs(virus);				
+			}
 			return; 
 		}
 		for(int i=start; i<list.size(); i++) {
@@ -58,58 +65,75 @@ public class Main_bj_17142_연구소3 {
 	}
 	
 	/**
-	 * 문제 처음에 잘못 이해함 아놔;; 
-	 * 언제 다 방문하는 걸로 계산해서 어쩔 땐 답이 맞고 틀렸는데, 
-	 * 그게 아니라 언제 다 전염되느냐의 최소 시간이기 때문에 
-	 * 그걸 고쳐야 했음ㅠㅠ
-	 * 다시 풀어 이거.. 하
+	 * ++ 고쳐야 했던 핵심 부분; 
 	 * @param virus
 	 */
 	static void bfs(ArrayList<Virus> virus) {
 		ArrayDeque<Virus> dq = new ArrayDeque<>(); 
-		done = new boolean[N][N]; // 활성화된 바이러스를 표시한다 
-		
 		/**
-		 * 일단 초기 활성 바이러스 모두 방문처리하고 
+		 * ++ timeStamp[][] 배열 
+		 * 미 방문은 -1 
+		 * 활성 바이러스는 0 
 		 */
+		int[][] timeStamp = new int[N][N];
+		for(int i=0; i<N; i++) Arrays.fill(timeStamp[i], -1); 
+		
 		for(Virus v: virus) {
 			dq.offer(v); 
-			done[v.r][v.c] = true;  
+			timeStamp[v.r][v.c] = 0;  
 		}
 		Virus v = null;
 		int maxEmptyTime = 0; 
+		int currentEmptyCnt = emptyCount; 
 		while(!dq.isEmpty()) {
 			v = dq.poll();
-			done[v.r][v.c] = true; 
 			
 			for(int d=0; d<4; d++) {
 				int ni = v.r + di[d]; 
 				int nj = v.c + dj[d]; 
 				if(ni<0 || ni>=N || nj<0 || nj>= N) continue; 
 				/**
+				 * ++ 이미 방문했거나 벽이면 통과하는 게 가지치기 잘하는 거임 
+				 */
+				if(timeStamp[ni][nj] != -1 || map[ni][nj] == 1) continue; 
+				
+				/**
 				 * 활성 바이러스가 비활성 바이러스가 있는 칸으로 가면 
 				 * 비활성 바이러스가 활성으로 변한다. 
+				 * 
+				 * ++ 방문 안했고 빈칸이거나 비활성 바이러스면 방문해야됨 
 				 */
-				if(!done[ni][nj] && (map[ni][nj] == 0 || map[ni][nj] == 2)) {
+				if(timeStamp[ni][nj] == -1 && (map[ni][nj] == 0 || map[ni][nj] == 2)) {
 					dq.offer(new Virus(ni, nj, v.time+1));
-					done[ni][nj] = true; 
-				
+					timeStamp[ni][nj] = v.time+ 1; 
+					
 					/**
-					 * 만약 지금 감염시킨 곳이 '빈칸'이면
-					 * 그 감염 시간을 maxEmptyTime에 갱신한다. 
-					 * => 모두 방문하는 게 목적이 아니라, 언제 다 전염되는지가 중요한거라서 
+					 * ++ 만약 빈칸에 전염시켰다면 (비활성 바이러스는 maxTime이나 emptyCount에 영향을 주지 않는다. 
+					 * 
+					 * emptyCount 1 빼고 
+					 * 전체 빈칸이 되었는지는 모르지만, 일단 현재까지는 포함되는 거니까 maxEmptyTime을 갱신한다 
+					 * ++ 주의점: maxEmptyTime을 또 1 증가시키면 안된다 
 					 */
 					if(map[ni][nj] == 0) {
-						maxEmptyTime = Math.max(maxEmptyTime, v.time+1);
+						currentEmptyCnt--; 
+						maxEmptyTime = timeStamp[ni][nj]; 
 					}
+				}
+				/**
+				 * ++ 만약 모든 빈칸이 감염되었으면 큐에 남은 비활성 바이러스를 더 이상 처리할 필요가 없다. 
+				 * 따라서 바로 종료하자. 
+				 */
+				if(currentEmptyCnt == 0) {
+					break; 
 				}
 			}
 		}
-		if(checkAll(done)) {
-			minTime = Math.min(minTime, maxEmptyTime);
-			System.out.println("maxEmpyTime " + maxEmptyTime);
-			
-			return; 
+		/**
+		 * ++ 최종적으로 모든 빈칸이 감염되었는지만 확인하면 됨 
+		 * 그렇다면, minTime을 갱신해야 한다. 
+		 */
+		if(currentEmptyCnt == 0) {
+			minTime = Math.min(maxEmptyTime, minTime);
 		}
 		
 	}
