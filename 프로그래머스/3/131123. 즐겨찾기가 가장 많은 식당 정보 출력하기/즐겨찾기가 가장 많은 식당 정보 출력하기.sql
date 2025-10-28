@@ -1,0 +1,16 @@
+-- 코드를 입력하세요
+# 음식 종류 별로 
+# 즐겨찾기 수가 가장 많은 
+WITH TEMP AS (
+    SELECT *, 
+    RANK() OVER (
+        PARTITION BY FOOD_TYPE 
+        ORDER BY FAVORITES DESC 
+    ) AS RNK 
+    FROM REST_INFO
+)
+
+SELECT FOOD_TYPE, REST_ID, REST_NAME, FAVORITES
+FROM TEMP 
+WHERE RNK = 1
+ORDER BY FOOD_TYPE DESC; 
