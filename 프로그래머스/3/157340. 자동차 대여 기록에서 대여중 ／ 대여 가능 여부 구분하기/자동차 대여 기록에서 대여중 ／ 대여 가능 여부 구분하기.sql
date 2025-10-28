@@ -1,0 +1,12 @@
+-- 코드를 입력하세요
+# 2022년 10월 16일 대여 중이면 '대여중' '대여가능'을 추가 
+
+SELECT 
+    CAR_ID,
+    MAX(CASE 
+        WHEN '2022-10-16' BETWEEN START_DATE AND END_DATE THEN '대여중'
+        ELSE '대여 가능'
+    END) AS AVAILABILITY
+FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
+GROUP BY CAR_ID
+ORDER BY CAR_ID DESC; 
