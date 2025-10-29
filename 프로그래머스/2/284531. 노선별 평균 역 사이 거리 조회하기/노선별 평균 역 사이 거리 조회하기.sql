@@ -1,0 +1,9 @@
+-- 코드를 작성해주세요
+-- 노선별로 노선, 총 누계 거리, 평균 역 사이의 거리 
+-- 노선 그룹핑 
+SELECT ROUTE, 
+        CONCAT(ROUND(SUM(D_BETWEEN_DIST), 1), 'km') AS TOTAL_DISTANCE,
+        CONCAT(ROUND(SUM(D_BETWEEN_DIST) / COUNT(*), 2), "km") AS AVERAGE_DISTANCE 
+FROM SUBWAY_DISTANCE 
+GROUP BY ROUTE 
+ORDER BY ROUND(SUM(D_BETWEEN_DIST), 1) DESC;
