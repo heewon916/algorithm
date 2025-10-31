@@ -1,0 +1,15 @@
+-- 2022년 1월의 도서 판매 데이터를 기준으로 저자 별, 카테고리 별 매출액(TOTAL_SALES = 판매량 * 판매가) 을 구하여, 
+# 1. 2022년 1월에 팔린 책들에 대해서 
+#     BOOK_ID별로 묶고, 그떄 SALES 값에 BOOK테이블의 PRICE값과 곱한다 
+# 2. 그리고 BOOK_ID별로 AUTHOR_ID를 엮으면 될 거 같다 
+
+SELECT T.AUTHOR_ID, A.AUTHOR_NAME, T.CATEGORY, T.TOTAL_SALES 
+FROM AUTHOR A 
+    JOIN (
+        SELECT B.AUTHOR_ID, B.CATEGORY, SUM(BS.SALES * B.PRICE) AS TOTAL_SALES
+        FROM BOOK_SALES BS 
+            JOIN BOOK B ON BS.BOOK_ID = B.BOOK_ID 
+        WHERE YEAR(BS.SALES_DATE) = '2022' AND MONTH(BS.SALES_DATE) = '01'
+        GROUP BY B.AUTHOR_ID, B.CATEGORY
+    ) AS T ON A.AUTHOR_ID = T.AUTHOR_ID
+ORDER BY T.AUTHOR_ID ASC, T.CATEGORY DESC; 
