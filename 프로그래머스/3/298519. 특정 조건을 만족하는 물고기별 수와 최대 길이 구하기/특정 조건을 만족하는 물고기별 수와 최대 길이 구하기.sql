@@ -1,0 +1,10 @@
+# -- 코드를 작성해주세요
+# LENGTH가 NULL인 10CM 이하인 아이들은 10으로 바꾼 뒤에 
+# TYPE별로 그룹핑한 그룹별로 길이 평균을 구하고 
+# 그 평균이 33CM이상인 경우에 대해서만 행을 카운트한다 
+SELECT COUNT(ID) AS FISH_COUNT, MAX(LEN) AS MAX_LENGTH, FISH_TYPE
+FROM (SELECT ID, FISH_TYPE, IFNULL(LENGTH, 10) AS LEN
+    FROM FISH_INFO) AS T 
+GROUP BY FISH_TYPE 
+HAVING AVG(LEN) >= 33
+ORDER BY FISH_TYPE; 
