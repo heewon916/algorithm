@@ -1,5 +1,3 @@
--- 코드를 작성해주세요
-select a.id as id, count(b.id) as child_count
-from ecoli_data a left join ecoli_data b
-on a.id = b.parent_id
-group by a.id; 
+SELECT P.ID, SUM(CASE WHEN C.PARENT_ID IS NOT NULL THEN 1 ELSE 0 END) AS CHILD_COUNT 
+FROM ECOLI_DATA P LEFT JOIN ECOLI_DATA C ON P.ID = C.PARENT_ID
+GROUP BY P.ID; 
