@@ -10,28 +10,13 @@ public class Main_bj_1327_소트게임 {
 	 * @return
 	 */
 	static int swap(int cur, int i, int N, int K) {
-		String curStr = ""; 
-		String ret = ""; 
-		int ret_swap = 0; 
-		for(int k=0; k<N; k++) {
-			curStr += cur%Math.pow(10, N-i);
-		}
-		System.out.println("curStr" + curStr);
-
-		for(int k=0; k<i; k++) {
-			ret += curStr.charAt(k);
-		}
-		for(int k=K-1; k>=0; k--) {
-			ret += curStr.charAt(i+k);
-		}
-		for(int k=i+K; k<N; k++) {
-			ret += curStr.charAt(k);
-		}
-//		System.out.println("swap 함수: " + ret);
-		for(int k=0; k<N; k++) {
-			ret_swap += ret_swap*10 + Integer.valueOf(curStr.charAt(k)); 
-        }
-		return ret_swap; 
+		String curStr = String.valueOf(cur); 
+		StringBuilder sb = new StringBuilder(); 
+		sb.append(curStr.substring(0, i));
+		StringBuilder mid = new StringBuilder(curStr.substring(i, i+K));
+		sb.append(mid.reverse());
+		sb.append(curStr.substring(i+K, N));
+		return Integer.parseInt(sb.toString());
 	}
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -41,28 +26,23 @@ public class Main_bj_1327_소트게임 {
         int K = Integer.parseInt(st.nextToken());
         
         int[] arr = new int[N]; 
-//        String strt = "";
-//        String end = ""; 
-        int strt = 0; 
-        int end = 0; 
-        for(int i=0; i<N; i++) {
-        	strt += strt*10 + arr[i]; 
-        }
-        Arrays.sort(arr);
-        for(int i=0; i<N; i++) {
-        	end += end*10 + arr[i]; 
-        }
         st = new StringTokenizer(br.readLine(), " ");
         for(int i=0; i<N; i++) {
         	arr[i] = Integer.parseInt(st.nextToken());
-//        	strt += arr[i]; 
+        }
+                
+        int strt = 0; 
+        int end = 0; 
+        for(int i=0; i<N; i++) {
+        	strt = strt*10 + arr[i]; 
+        }
+        Arrays.sort(arr);
+        for(int i=0; i<N; i++) {
+        	end = end*10 + arr[i]; 
         }
         
-        System.out.println("시작 숫자, 끝숫자: " + strt + ", " + end);
         // depth별로 관리하는 게 어떨까 
-        // depth별로 만들어진 문자열 관리 + 전체 문자열고나리 
-//        Set<String> allVisited = new HashSet<>(); 
-//        ArrayDeque<String> q = new ArrayDeque<>(); 
+        // depth별로 만들어진 문자열 관리 + 전체 문자열 관리 
         Set<Integer> allVisited = new HashSet<>(); 
         ArrayDeque<Integer> q = new ArrayDeque<>(); 
         q.add(strt);
@@ -75,6 +55,31 @@ public class Main_bj_1327_소트게임 {
         int depth = 0; 
         boolean able;
         int answer = -1; 
+        while(!q.isEmpty()) {
+        	int size = q.size(); 
+        	
+        	for(int s=0; s<size; s++) {
+        		int cur = q.poll(); 
+        		
+        		if(cur == end) {
+        			System.out.println(depth);
+        			return; 
+        		}
+        		
+        		for(int i=0; i<=N-K; i++) {
+        			int newStr = swap(cur, i, N, K);
+//        			System.out.println("새로운 str: " + newStr);
+        			if(allVisited.add(newStr)) {
+        				q.offer(newStr);
+//        				System.out.println("-> 추가됨");
+        			}
+        		}
+        	}
+        	
+        	depth++; 
+        }
+        System.out.println(answer);
+        /*
         while(true) {
         	ArrayDeque<Integer> nextDepthQ = new ArrayDeque<>(); 
 //        	System.out.println("현재 depth에 들어가있는 숫자들: ");
@@ -115,6 +120,7 @@ public class Main_bj_1327_소트게임 {
         	depth++; 
         }
         System.out.println(answer);
+        */
     }
 }
 /*
