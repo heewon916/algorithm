@@ -5,7 +5,6 @@ public class Main_bj_15810_풍선공장 {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = null;
-        System.out.println(Math.pow(10, 12) < Long.MAX_VALUE);
         st = new StringTokenizer(br.readLine(), " ");
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
@@ -14,28 +13,49 @@ public class Main_bj_15810_풍선공장 {
         for(int i=0; i<N; i++) {
             arr[i] = Long.parseLong(st.nextToken());
         }
-        Arrays.sort(arr);
-        if(N > M){
-            System.out.println(arr[M-1]);
-            return;
+        
+        long low = 0; 
+        long high = (long) Math.pow(10, 12); 
+        long answer = 0; 
+        while(low <= high) {
+        	long mid = (low + high) / 2; 
+        	
+        	long sum = 0; 
+        	for(int i=0; i<N; i++) {
+        		sum += (mid / arr[i]);
+        	}
+        	
+        	if(sum >= M) {
+        		answer = mid; 
+        		high = mid-1; 
+        	}else {
+        		low = mid+1; 
+        	}
         }
-        long min = arr[0];
-        arr[0] = Long.MAX_VALUE;
-        long all = (int) Math.round(M/N);
-        long left = M % N;
-        Long maxTime = (long) (min * all + min * left);
-//        System.out.println(all + " " + left + " " + min * all);
-        for(int i=1; i<N; i++){
-            if(arr[i] * all > maxTime){
-                maxTime = (long) (arr[i] * all);
-            }
-        }
-        System.out.println(maxTime);
-
+        System.out.println(answer);
     }
 }
 /*
 N명의 스태프
 M개의 풍선 만들기
-풍선이 다 만들어지는 최소 시간
+
+이분 탐색으로 문제를 풀어야 할 때 해볼 수 있는 생각의 흐름 
+1. 무엇을 탐색할 것인가?  
+구하고자 하는 최종 답: 풍선 M개 만드는데 걸리는 최소 시간 
+left, right, mid -> 우리가 구하고자 하는 정답일 확률이 높다 
+-> 이분 탐색으로 조절하며 짝을 맞춰봐야 하는 변수 mid = 시간 
+=> mid라는 시간이 주어진다면, 스태프들은 풍선 몇 개를 만들 수 있을까? 
+
+2. 조건 판단하기 - mid를 총 시간으로 설정했을 때 이제 이 사간이 충분한지 부족한지 판단하는 로직 
+모든 스태프의 (주어진 시간 mid / 스태프i의 작업 속도)의 합 >= M (목표 개수) 
+-> 만약 true면 널널하단 뜻이니까 high--
+-> 만약 false면 시간 부족한 거니까 low++ 
+
+3. 범위 주의하기 
+- N: 10^6
+- 풍선 개수 M: 최대 10^6
+- 걸리는 시간 Ai: 최대 10^6
+- 최악의 경우 걸리는 시간: 모두가 10^6이 걸려서 10^12일 수 있겠네 
+
+
  */
