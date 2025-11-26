@@ -1,0 +1,7 @@
+*.metadata/
+*.settings/
+*.classpath
+*.project 
+bin/
+*.class 
+ProblemSolving.iml 
