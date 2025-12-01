@@ -4,3 +4,11 @@
 **.classpath
 **.settings/
 .git/
+**.class
+
+# --- IntelliJ IDEA ---
+.idea/
+*.iws
+*.iml
+out/
+
