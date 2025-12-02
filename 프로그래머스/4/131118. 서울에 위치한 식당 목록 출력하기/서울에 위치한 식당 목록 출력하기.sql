@@ -1,9 +1,8 @@
--- 코드를 입력하세요
-SELECT i.rest_id, i.rest_name, i.food_type, i.favorites, i.address, 
-    round(avg(v.review_score), 2) as score
-from rest_info i, rest_review v
-where i.rest_id = v.rest_id  
-and address like "서울%"
-group by rest_id 
-order by score desc, i.favorites desc; 
-
+-- 식당ID, 식당이름, 음식 종류, 즐겨찾기수, 주소, 리뷰평균점수 
+SELECT I.REST_ID, I.REST_NAME, 
+        I.FOOD_TYPE, I.FAVORITES, 
+        I.ADDRESS, ROUND(AVG(R.REVIEW_SCORE), 2) AS SCORE 
+FROM REST_INFO I JOIN REST_REVIEW R ON I.REST_ID = R.REST_ID 
+WHERE I.ADDRESS LIKE "서울%"
+GROUP BY REST_ID 
+ORDER BY SCORE DESC, I.FAVORITES DESC; 
