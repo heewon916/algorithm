@@ -1,3 +1,5 @@
+package bj;
+
 import java.io.*;
 import java.util.*;
 public class Main_bj_2169_로봇조종하기 {
