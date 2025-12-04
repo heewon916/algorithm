@@ -11,7 +11,7 @@ public class Main_bj_20127_Y수열 {
         N = Integer.parseInt(st.nextToken());
         st = new StringTokenizer(br.readLine(), " ");
         arr = new long[N];
-        ArrayList<Integer> anss = new ArrayList<>();
+
         for(int i=0; i<N; i++){
             arr[i] = Long.parseLong(st.nextToken());
         }
@@ -21,27 +21,18 @@ public class Main_bj_20127_Y수열 {
         for(int i=1; i<N; i++){
             if(arr[i] >= arr[i-1]) dp[i] = dp[i-1] +1;
         }
-        System.out.println(Arrays.toString(dp));
-        int ans = check(dp);
-        if(ans > 0){
-            long startN = 0, lastN = 0;
+
+        int inc_res = check(dp);
+        if(inc_res > 0){
+            long startN = 0, lastN = arr[N-1];
             for(int i=0; i<N; i++){
                 if(dp[i] == 0) {
                     startN = arr[i];
                     break;
                 }
             }
-            for(int i=N-1; i>=0; i--){
-                if(dp[i] == ans-1) {
-                    lastN = arr[i];
-                    break;
-                }
-            }
-            System.out.println(startN + " " + lastN);
-            if(startN <= lastN){
-                anss.add(-1);
-            }else{
-                anss.add(ans);
+            if(startN < lastN){
+                inc_res = -1;
             }
         }
 
@@ -49,42 +40,49 @@ public class Main_bj_20127_Y수열 {
         for(int i=1; i<N; i++){
             if(arr[i] <= arr[i-1]) dp[i] = dp[i-1] + 1;
         }
-        System.out.println(Arrays.toString(dp));
-        ans = check(dp);
-        if(ans > 0){
-            long startN = 0, lastN = 0;
+
+        int dec_res = check(dp);
+        if(dec_res > 0){
+            long startN = 0, lastN = arr[N-1];
             for(int i=0; i<N; i++){
                 if(dp[i] == 0) {
                     startN = arr[i];
                     break;
                 }
             }
-            for(int i=N-1; i>=0; i--){
-                if(dp[i] == ans-1) {
-                    lastN = arr[i];
-                    break;
-                }
-            }
-            if(startN >= lastN){
-                anss.add(-1);
-            }else{
-                anss.add(ans);
+
+            if(startN > lastN){
+                dec_res = -1;
             }
         }
 
-        System.out.println(anss);
+        if(inc_res >= 0 && dec_res >= 0){
+            System.out.println(Math.min(inc_res, dec_res));
+        }else if(inc_res >= 0) System.out.println(inc_res);
+        else if(dec_res >= 0) System.out.println(dec_res);
+        else System.out.println(-1);
     }
     static int check(int[] dp){
         int zero_cnt = 0;
         int max_len = 0;
+        int firstCutIdx = -1;
         for(int i=0; i<N; i++){
-            if(dp[i] == 0) zero_cnt++;
-            max_len = Math.max(max_len, dp[i]+1);
+            if(dp[i] == 0) {
+                zero_cnt++;
+                /**
+                 * 두 번째 시작점 구하는 게 문제였네
+                 *  max_len = Math.max(max_len, dp[i]+1);
+                 *  두 번째 0 시작점을 구하는 게 포인트임!
+                 */
+                if(i>0 && firstCutIdx == -1){
+                    firstCutIdx = i;
+                }
+            }
         }
         if(zero_cnt == 1){
             return 0;
         }else if(zero_cnt == 2){
-            return max_len;
+            return firstCutIdx;
         }else{
             return -1;
         }
