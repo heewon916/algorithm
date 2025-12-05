@@ -1,3 +1,4 @@
-SELECT P.ID, SUM(CASE WHEN C.PARENT_ID IS NOT NULL THEN 1 ELSE 0 END) AS CHILD_COUNT 
-FROM ECOLI_DATA P LEFT JOIN ECOLI_DATA C ON P.ID = C.PARENT_ID
-GROUP BY P.ID; 
+-- 나를 부모로 삼는 애가 자식이겠지? 
+select parent.id, count(child.id) as child_count
+from ecoli_data as parent left join ecoli_data as child on parent.id = child.parent_id
+group by parent.id; 
