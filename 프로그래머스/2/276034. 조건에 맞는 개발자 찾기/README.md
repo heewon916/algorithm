@@ -1,6 +1,6 @@
 # [level 2] 조건에 맞는 개발자 찾기 - 276034 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/276034#qna) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/276034) 
 
 ### 성능 요약
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2025년 10월 16일 09:38:15
+2025년 12월 05일 13:58:17
 
 ### 문제 설명
 
