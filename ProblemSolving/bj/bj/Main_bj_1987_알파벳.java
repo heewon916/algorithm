@@ -38,7 +38,7 @@ public class Main_bj_1987_알파벳 {
         for(int i=0; i<R; i++){
             String input = br.readLine();
             for(int j=0; j<C; j++){
-                map[i][j] = 1 << (input.charAt(j)-'A');
+                map[i][j] = 1 << (input.charAt(j)-'A'); // 알파벳을 비트로 만든 것
             }
 //            System.out.println(Arrays.toString(map[i]));
         }
@@ -67,7 +67,7 @@ public class Main_bj_1987_알파벳 {
 //            }
 //        }
         ans = Integer.MIN_VALUE;
-//        int startBit = 1 << map[0][0];
+//        int startBit = 1 << map[0][0]; // 따라서 또 연산해줄 필요가 없음
         dfs(0, 0, map[0][0], 1);
         System.out.println(ans);
     }
