@@ -5,14 +5,13 @@ import java.util.*;
 
 public class Main_bj_32358_근성아일하자 {
     static int N;
-    static TreeMap<Integer, Integer> map; 
+    static TreeMap<Integer, Integer> map;
     static Integer start;
-    static int totalMove;
+    static long totalMove; // int -> long 누적합이라서
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = null;
-
         st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
 
@@ -39,9 +38,9 @@ public class Main_bj_32358_근성아일하자 {
                 trashCnt++; 
             } else {
                 while(trashCnt > 0){
-                    Integer left = map.floorKey(start);
-                    Integer right = map.ceilingKey(start);
-                    Integer target = null; 
+                    Integer left = map.floorKey(start); // 나보다 작은 수 중, 나랑 가장 가까운 거
+                    Integer right = map.ceilingKey(start); // 나보다 큰 수 중, 나랑 가장 가까운 거
+                    Integer target = null; // 쓰레기를 주우러 갈 곳; 근데 현위치에서 가장 가까운 곳
 
                     if(left == null){
                         target = right; 
@@ -67,7 +66,7 @@ public class Main_bj_32358_근성아일하자 {
                             }
                         }
                     }
-                    // 이동거리 축적하고 현재 위치 target으로 변경 
+                    // 이동거리 축적하고 현재 위치 target으로 변경
                     totalMove += Math.abs(start - target);
                     start = target; 
                     // 만약 target 좌표에 있던 쓰레기 개수가 0이 되면 그 좌표는 아예 delete
