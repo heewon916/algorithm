@@ -66,15 +66,15 @@ public class Main_bj_32358_근성아일하자 {
                                 target = right; 
                             }
                         }
-                        // 이동거리 축적하고 현재 위치 target으로 변경 
-                        totalMove += Math.abs(start - target);
-                        start = target; 
-                        // 만약 target 좌표에 있던 쓰레기 개수가 0이 되면 그 좌표는 아예 delete
-                        if(map.get(target) == 0){
-                            map.remove(target);
-                        }else{
-                            map.put(target, map.get(target)-1);
-                        }
+                    }
+                    // 이동거리 축적하고 현재 위치 target으로 변경 
+                    totalMove += Math.abs(start - target);
+                    start = target; 
+                    // 만약 target 좌표에 있던 쓰레기 개수가 0이 되면 그 좌표는 아예 delete
+                    if(map.get(target) == 1){
+                        map.remove(target);
+                    }else{
+                        map.put(target, map.get(target)-1);
                     }
                     trashCnt--; 
                 }
