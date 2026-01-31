@@ -28,7 +28,7 @@ public class Main_bj_1976_여행가자 {
         for(int i=1; i<=N; i++){
             for(int j=i+1; j<=N; j++){
                 if(canGo(i,j)) {
-                    map[i][j] = map[j][i] = 1;
+                    danceMap[i][j] = danceMap[j][i] = 1;
                 }
             }
         }
@@ -49,7 +49,7 @@ public class Main_bj_1976_여행가자 {
         boolean ans = true;
         for(int i=1; i<M; i++){
             int prev = target[i-1], now = target[i];
-            if(map[prev][now] != 1){
+            if(danceMap[prev][now] != 1){
                 if(!canGo(prev, now)) {
                     ans = false; break;
                 }
@@ -86,7 +86,7 @@ public class Main_bj_1976_여행가자 {
         while(!q.isEmpty()){
             int curr = q.poll();
             for(int i=1; i<=N; i++){
-                if(!v[i] && map[curr][i] == 1){
+                if(!v[i] && danceMap[curr][i] == 1){
                     if(i == target) return true;
                     q.add(i); v[i] = true;
                 }
@@ -105,11 +105,11 @@ M 여행 계획에 속한 도시 개수
     다른 도시 j에 갈 수 있으면 1로 모두 표시해두면 될 것 같음
 for i 1...N
     for j i+1..N
-        cango(i,j) -> map[i][j] = map[j][i] = 1
+        cango(i,j) -> danceMap[i][j] = danceMap[j][i] = 1
         1/2 * n^3 = 8 * 10^6 * 1/2
 cango(i, j)
     bfs start = i
-    q <- adj : map[i][adj] == 1; v[adj] = true
+    q <- adj : danceMap[i][adj] == 1; v[adj] = true
 
 ---
 

@@ -32,7 +32,7 @@ public class Main_bj_20291_파일정리 {
 /*
 만약 key, value 모두 정렬의 기준이 된다면
 TreeMap을 제거하고 List 정렬로 가야 한다.
-List<Map.Entry<String, Integer>> list = new ArrayList<>(map.entrySet());
+List<Map.Entry<String, Integer>> list = new ArrayList<>(danceMap.entrySet());
 
 Collections.sort(list, (e1, e2) -> {
     if (!e1.getValue().equals(e2.getValue())) {

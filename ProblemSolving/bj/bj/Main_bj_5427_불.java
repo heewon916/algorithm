@@ -20,7 +20,7 @@ public class Main_bj_5427_불 {
 			st = new StringTokenizer(br.readLine(), " ");
 			C = Integer.parseInt(st.nextToken());
 			R = Integer.parseInt(st.nextToken());
-//			char[][] map = new char[R][C]; 
+//			char[][] danceMap = new char[R][C];
 			graph = new int[R][C];
 			for(int i=0; i<R; i++) Arrays.fill(graph[i], Integer.MAX_VALUE);
 			// 상근이는 1로 시작함 

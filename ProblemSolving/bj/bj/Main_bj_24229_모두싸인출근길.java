@@ -54,35 +54,29 @@ public class Main_bj_24229_모두싸인출근길 {
         }
 
         // 3. 계산
-        // TODO: lastPoint랑 prevDiff만 처리하면 될 듯하다
-        int lastPoint = 0;
+        /**
+         * 내 현재 기준으로
+         * 다음 판자를 봤을 때
+         * 그 판자의 시작점이 내가 갈 수 있는 최대 좌표보다 작으면 난 갈 수 있음
+         * 그 판자에 도달했을 때 갈 수 있는 최대 좌표랑 지금의 최대 좌표를 비교했을 때 더 큰 녀석으로 고른다.
+         * 그러다가 판자의 시작점이 내가 갈 수 있는 최대 좌표보다 커지면 더 이상 갈 수 없음
+         */
+        int[] now = list.get(0);
+        int ans = now[1];
+        int lastReachPoint = now[1] + (now[1] - now[0]);
+        System.out.println(lastReachPoint);
         for(int i=1; i<list.size(); i++){
-
-            int[] prev = list.get(i-1);
-            int[] now = list.get(i);
-            int prevDiff = prev[1] - prev[0];
-
-            System.out.println("prev: " + Arrays.toString(prev));
-            System.out.println("now: " + Arrays.toString(now));
-            System.out.println("lastPoint: " + lastPoint);
-            System.out.println("prevDiff: " + prevDiff);
-
-            if(prevDiff + lastPoint > now[1]) {
-                System.out.println("==continue==");
-                i += 1;
-                continue;
+            int[] next = list.get(i);
+            System.out.println("next = " + Arrays.toString(next));
+            if(next[0] <= lastReachPoint){
+                int jumpStrength = next[1] + (next[1] - next[0]);
+                lastReachPoint = Math.max(lastReachPoint, jumpStrength);
+                ans = next[1]; // 이 판자에는 도달할 수 있다는 뜻
+                System.out.println(lastReachPoint);
+            }else{
+                break;
             }
-            if(prevDiff + prev[1] >= now[0]){
-                 // 건너갈 수 있음
-                 lastPoint = now[1];
-                 System.out.println("건너갈 수 있음: " + lastPoint);
-             }else{
-                 // 이제 못 건너감
-                 System.out.println("종료: -- 건너갈 수 없음: " + lastPoint);
-                 break;
-             }
-            System.out.println("-------");
         }
-        System.out.println(lastPoint);
+        System.out.println(ans);
     }
 }

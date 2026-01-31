@@ -227,19 +227,19 @@ public class Main_bj_21609_상어중학교 {
 					}
 				}
 			}
-//			printMap(map);
+//			printMap(danceMap);
 			/**
 			 * 3. 바닥으로 블록 내리고 반시계 회전하고 바닥으로 블록 내리기 
 			 */
 			gravity(map); 
 //			System.out.println("중력이후: ");
-//			printMap(map);
+//			printMap(danceMap);
 			turn(map);
 //			System.out.println("회전이후: ");
-//			printMap(map); 
+//			printMap(danceMap);
 			gravity(map);
 //			System.out.println("중력이후: ");
-//			printMap(map); 
+//			printMap(danceMap);
 			
 		}
 		System.out.println(score);

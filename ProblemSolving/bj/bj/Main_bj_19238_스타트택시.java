@@ -140,7 +140,7 @@ public class Main_bj_19238_스타트택시 {
 		
 //		for(int i=0; i<N; i++) {
 //			for(int j=0; j<N; j++) {
-//				System.out.printf("%3d", map[i][j]);
+//				System.out.printf("%3d", danceMap[i][j]);
 //			}
 //			System.out.println();
 //		}

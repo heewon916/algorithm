@@ -40,11 +40,11 @@ public class Main_bj_1987_알파벳 {
             for(int j=0; j<C; j++){
                 map[i][j] = 1 << (input.charAt(j)-'A'); // 알파벳을 비트로 만든 것
             }
-//            System.out.println(Arrays.toString(map[i]));
+//            System.out.println(Arrays.toString(danceMap[i]));
         }
 //        int[][] dist = new int[R][C];
 //        for(int i=0; i<R; i++) Arrays.fill(dist[i], Integer.MAX_VALUE);
-//        dist[0][0] = map[0][0];
+//        dist[0][0] = danceMap[0][0];
         // int가 32비트니까? A면 dist[i][j] & (int)A 해서 그 알파벳 방문했다고 해야 되지 않나
         // 최단경로 탐색이니까
 //        ArrayDeque<int[]> q = new ArrayDeque<>();
@@ -59,15 +59,15 @@ public class Main_bj_1987_알파벳 {
 //                int ny = y + dc[d];
 //                if(nx<0 || nx>=R || ny<0 || ny>=C) continue;
 //                if(v[nx][ny]) continue;
-//                // map[nx][ny]에 있는 알파벳이 이미 포함되어 있니?
-//                if((status & map[nx][ny]) != 0) continue; // 이미 방문한 알파벳임
+//                // danceMap[nx][ny]에 있는 알파벳이 이미 포함되어 있니?
+//                if((status & danceMap[nx][ny]) != 0) continue; // 이미 방문한 알파벳임
 //                // 방문한 알파벳도 아니고, 방문했던 위치도 아니면?
-//                dist[nx][ny] = map[nx][ny] | status;
+//                dist[nx][ny] = danceMap[nx][ny] | status;
 //                v[nx][ny] = true;
 //            }
 //        }
         ans = Integer.MIN_VALUE;
-//        int startBit = 1 << map[0][0]; // 따라서 또 연산해줄 필요가 없음
+//        int startBit = 1 << danceMap[0][0]; // 따라서 또 연산해줄 필요가 없음
         dfs(0, 0, map[0][0], 1);
         System.out.println(ans);
     }
@@ -80,7 +80,7 @@ public class Main_bj_1987_알파벳 {
             if (nr < 0 || nr >= R || nc < 0 || nc >= C) continue;
             int bit = map[nr][nc];
 
-            // map[nx][nc]에 있는 알파벳이 이미 포함되어 있니?
+            // danceMap[nx][nc]에 있는 알파벳이 이미 포함되어 있니?
             if ((visitedAlphas & bit) != 0) continue; // 이미 방문한 알파벳임
             // 방문한 알파벳도 아니고, 방문했던 위치도 아니면?
             dfs(nr, nc, visitedAlphas|bit, length+1);

@@ -47,7 +47,7 @@ public class Main_bj_16234_인구이동 {
         }
         // for (int r = 0; r < N; r++) {
         // for (int c = 0; c < N; c++) {
-        // System.out.print(map[r][c] + " ");
+        // System.out.print(danceMap[r][c] + " ");
         // }
         // System.out.println();
         // }

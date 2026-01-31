@@ -80,7 +80,7 @@ public class Main_bj_17144_미세먼지안녕 {
 			for(int i=0; i<R; i++) {
 				for(int j=0; j<C; j++) {
 					map[i][j] += diff[i][j]; 
-//					System.out.printf("%3d ", map[i][j]);
+//					System.out.printf("%3d ", danceMap[i][j]);
 				}
 //				System.out.println();
 			}
@@ -130,7 +130,7 @@ public class Main_bj_17144_미세먼지안녕 {
 					if(x<0 || x>=R || y<0 || y>=C) break; 
 					map[x][y] = list.get(idx++);
 					last[0] = x; last[1] = y; 
-//					System.out.println("x = " + x + ", y = " + y + "거기 값: " + map[x][y]);
+//					System.out.println("x = " + x + ", y = " + y + "거기 값: " + danceMap[x][y]);
 					x = x + di[dir]; 
 					y = y + dj[dir]; 
 				}
@@ -140,7 +140,7 @@ public class Main_bj_17144_미세먼지안녕 {
 //			System.out.println("===공기청정기: 윗 방향 ===");
 //			for(int i=0; i<R; i++) {
 //				for(int j=0; j<C; j++) {
-//					System.out.printf("%3d ", map[i][j]);
+//					System.out.printf("%3d ", danceMap[i][j]);
 //				}
 //				System.out.println();
 //			}
@@ -191,7 +191,7 @@ public class Main_bj_17144_미세먼지안녕 {
 //			System.out.println("===공기청정기: 아래 방향 ===");
 //			for(int i=0; i<R; i++) {
 //				for(int j=0; j<C; j++) {
-//					System.out.printf("%3d ", map[i][j]);
+//					System.out.printf("%3d ", danceMap[i][j]);
 //				}
 //				System.out.println();
 //			}
