@@ -1,46 +1,46 @@
 import java.util.*; 
+
 class Solution {
-    static int[] b; 
-    static boolean[] v; 
-    static int maxCount; 
-    static int N; 
-    static int answer; 
-    static void perm(int k, int[][] dungeons, int cnt){
-        if(cnt == N){
-            int leftE = k; 
-            // 그럼 이 순서대로 한번 방문을 해보자 이거지 
-            int ableCount = 0; 
-            for(int i=0; i<N; i++){
-                int pos = b[i]; // 이 인덱스의 던전을 방문하자 
-                int need = dungeons[pos][0]; 
-                int cost = dungeons[pos][1]; 
-                if(need > leftE) break; 
-                if(cost > leftE) break; 
-                leftE -= cost; 
-                ableCount++; 
+    int n;
+    int[] b; 
+    boolean[] v;
+    int answer = 0; 
+    public int solution(int k, int[][] dungeons) {
+        n = dungeons.length; // 던전 개수 
+        b = new int[n]; // 일단 모든 던전을 방문하는 것으로 가정하고 진행한다. 
+        v = new boolean[n]; 
+        perm(0, k, dungeons);
+        return answer;
+    }
+    public void perm(int cnt, int k, int[][] dungeons){
+        if(cnt == n){
+            // b에 있는 번호 순서대로 계산해보기 
+            // System.out.println(Arrays.toString(b));
+            int left = k; 
+            int maxVisit = 0; 
+            for(int idx=0; idx<n; idx++){
+                int i = b[idx]; 
+                int limit = dungeons[i][0]; 
+                int d = dungeons[i][1]; 
+                if(left >= limit && (left-d >=0)){
+                    left = left - d; 
+                    maxVisit++; 
+                }else{
+                    break; // 더 이상 진행 불가 
+                }
             }
-            answer = Math.max(answer, ableCount);
+            answer = Math.max(answer, maxVisit);
             return; 
         }
-        for(int i=0; i<N; i++){
+        for(int i=0; i<n; i++){
             if(v[i]) continue; 
-            b[cnt] = i; 
             v[i] = true; 
-            perm(k, dungeons, cnt+1);
+            b[cnt] = i; 
+            perm(cnt+1, k, dungeons); 
             v[i] = false; 
         }
     }
-    public int solution(int k, int[][] dungeons) {
-        answer = 0; 
-        b = new int[dungeons.length];
-        N = dungeons.length;  // 던전 개수 
-        v = new boolean[N]; 
-        perm(k, dungeons, 0);
-        return answer;
-    }
 }
 /*
-최소 필요 피로도 >= 소모 피로도 
-
-이 던전들을 나열하는 거죠 
+permMain으로 풀면 될 것 같음
 */
