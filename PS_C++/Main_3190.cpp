@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector> 
+#include <deque> 
 
 using namespace std; 
 struct CMD{
@@ -17,8 +18,8 @@ int main(){
     vector<vector<int>> map(n, vector<int>(n, 0)); 
     for(int i=0; i<k; i++){
         int r, c; 
-        cin >> r >> c; 
-        map[r][c] = 1; 
+        cin >> r >> c; // 1-index/... 
+        map[r-1][c-1] = 1; 
     }
 
     int l; 
@@ -33,43 +34,52 @@ int main(){
     }
 
     int d = 1; // 오른쪽을 기점으로 시작한다 
-    int r = 0, c = 0; 
-    int tailR = 0, tailC = 0; 
+    int r, c; 
     int nr, nc; 
-    int result = 1; 
+    deque<pair<int, int>> dq; 
+    dq.push_back({0, 0}); 
+    map[0][0] = 2; 
+    int time = 0; 
     int listIdx = 0; 
     while(true){
-        cout << "===" << result << " 초 ===\n"; 
+        time++; 
+        pair<int, int> pos = dq.front();
+        r = pos.first; c = pos.second; 
+
         nr = r + dr[d]; 
         nc = c + dc[d]; 
+
         if(nr < 0 || nr >= n || nc<0 || nc>=n) break; // 벽
         if(map[nr][nc] == 2) break; // 자기 자신 
+
         if(map[nr][nc] == 1){ // 사과이면 
             map[nr][nc] = 2;  // 사과 없어지고 꼬리 그대로 
-            r = nr; // 머리 앞으로 이동 
-            c = nc; 
-        } else { // 벽/자기자신/사과 다 아닌 빈칸이면 
-            map[tailR][tailC] = 0; // 꼬리 지우고 
-            map[nr][nc] = 2;       // 머리 이동 
+            dq.push_front({nr, nc});
+        } else { // 벽/자기자신/사과 다 아닌 빈칸이면 꼬리 이동 필요 
+            // 꼬리 지우기
+            pair<int, int> tail = dq.back(); 
+            map[tail.first][tail.second] = 0; // 맨 뒤에 있는 꼬리 없애고 
+            dq.pop_back(); 
+
+            // 머리 이동 
+            dq.push_front({nr, nc}); 
+            map[nr][nc] = 2; 
         }
         
-        cout << "머리 위치: " << r << ", " << c << "\n"; 
-        cout << "꼬리 위치: " << tailR << ", " << tailC << "\n"; 
-        result++; // X초 끝남
         
         // X초가 끝난 뒤에 회전시킨다 
-        if(sec == cmdlist[listIdx].afterSec){
+        if(listIdx < l && time == cmdlist[listIdx].afterSec){
             int changeD = cmdlist[listIdx].dir; 
             if(changeD == 'L'){// 왼쪽으로 회전 d-1
                 d = (d+3) % 4;  
             } else { // 오른쪽으로 회전 d+1
                 d = (d+1) % 4; 
             }
+            listIdx++; // 이걸 빼먹었네 
         }
-        cout << "방향: " << d << "\n"; 
     }
 
-
+    cout << time ; 
     system("pause"); 
     return 0; 
 }
