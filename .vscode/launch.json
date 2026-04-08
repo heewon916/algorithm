@@ -1,7 +1,6 @@
 {
   "version": "0.2.0",
   "configurations": [
-
     {
       "name": "C/C++: g++.exe 활성 파일 빌드 및 디버그",
       "type": "cppdbg",
@@ -27,6 +26,25 @@
         }
       ],
       "preLaunchTask": "C/C++: g++.exe 활성 파일 빌드"
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": true,
+      "cwd": "c:/algorithm/PS_C++",
+      "program": "c:/algorithm/PS_C++/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
     }
   ]
 }
