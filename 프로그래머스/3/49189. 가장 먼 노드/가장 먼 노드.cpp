@@ -1,80 +1,65 @@
 #include <string>
 #include <vector>
-#include <cmath> 
-#include <climits> 
 #include <queue> 
-#include <iostream> 
+#include <climits>
 using namespace std;
 
-/**
-시작점을 기준으로 모든 정점까지의 최단 경로를 계산한다. 
-갈 수 있는 minVertex, minDist를 계속해서 업데이트한다 
-근데 가중치가 다 1이니까 그냥 bfs 돌리는 게 더 간단하다
-*/
-void dijkstra(int node, vector<vector<int>>& graph, vector<int>& dist){
-    // {정점, dist[정점]} + 최소힙으로 만들고 싶으면 greater 사용 필수
-    // [!!] 주의사항: 정렬 기준이 first 먼저 하고 second이기 때문에 {dist[정점], 정점}으로 선언해야 한다 
-    /**
-    priority_queue<pair<int, int>, vector<int, int>, greater<pair<int, int>>> pq;
-    - 정렬기준이 pair<int, int>에서 first 기준으로 정렬한다
-    만약 최대힙으로 하고 싶으면 priority_queue<pair<int, int>> 까지만 적어도 된다 
-    */
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-    dist[node] = 0; // pq에 push 하기 전에 무조건 0으로 세팅이 필수다
-    pq.push({dist[node], node}); 
+struct Pos{
+    int no; 
+    int distance; 
+};
+int solution(int n, vector<vector<int>> edge) {
+    int answer = 0;
+    // 그래프 정의 
+    vector<vector<int>> graph(n+1); 
+    for(vector<int> e: edge){
+        int a = e[0], b = e[1]; 
+        graph[a].push_back(b); 
+        graph[b].push_back(a); 
+    }
     
-    
+    // {정점 번호, dist[정점]} -> 거리 기준 멀리 
+    auto comp = [](Pos& a, Pos& b){
+        if(a.distance != b.distance) return a.distance > b.distance; // pq는 최대힙이니까 내림차순 정렬 필요
+        else return true; 
+    };
+    priority_queue<Pos, vector<Pos>, decltype(comp)> pq(comp); 
+    vector<int> dist(n+1, INT_MAX); // 거리 저장용 
+    dist[1] = 0; 
+    pq.push({1, dist[1]}); 
     while(!pq.empty()){
-        // pq는 top()으로 가져가야 한다
-        pair<int, int> cur = pq.top(); pq.pop(); 
-        int minDist = cur.first; 
-        int minV = cur.second;
+        Pos cur = pq.top(); pq.pop(); 
+        int minV = cur.no; 
+        int minDist = cur.distance; 
         
-        if(dist[minV] < minDist) continue; 
+        if(dist[minV] < minDist) continue; // 지금 막 계산된 게 최단이 아니면 고려할 필요가 없음
         
-        for(int next: graph[minV]){
-            if(dist[next] > minDist + 1){
-                dist[next] = minDist + 1; 
-                pq.push({dist[next], next}); 
+        for(int adj: graph[minV]){
+            if(dist[adj] > minDist + 1){
+                dist[adj] = minDist +1; 
+                pq.push({adj, dist[adj]}); 
             }
         }
     }
-}
-
-
-int solution(int n, vector<vector<int>> edge) {
-    int answer = 0;
-    vector<vector<int>> graph(n+1);
     
-    for(vector<int> e: edge){
-        graph[e[0]].push_back(e[1]);
-        graph[e[1]].push_back(e[0]);
+    int maxV = 0; 
+    for(int i=1; i<dist.size(); i++){
+        if(maxV < dist[i]){
+            maxV = dist[i]; 
+        }
     }
-    
-    vector<int> dist(n+1, INT_MAX);
-    
-    dijkstra(1, graph, dist); 
-    
-    int maxDist = 0; 
-    for(int a: dist){
-        cout << a << " "; 
-        if(a == INT_MAX) continue; 
-        maxDist = max(maxDist, a); 
-    }
-    
-    for(int a: dist){
-        if(a == maxDist) answer++; 
+    for(int i=0; i<dist.size(); i++){
+        if(maxV == dist[i]){
+            answer++;
+        }
     }
     return answer;
 }
 /*
-1번 정점 기준 최단경로 계산
-그 중에서 가장 긴 최단경로 ㄱㄱ 
-
-노드의 개수 n 20000 
-양방향 
-50000개 간선 
-
-그래프를 만들고 
-다익스트라? 
+n개의 노드 
+1..n (20000)
+가장 멀리 떨어져 있는 노드의 개수 
+최단경로라고 했을 때 각 노드까지 얼마의 depth인지 확인 필요
+근데 간선 가중치가 1이니까 bfs로 충분함 
+근데 다익으로 풀어보자 ㅇㅇ
 */
