@@ -1,54 +1,46 @@
-#include <vector>
-#include <queue>
-
+#include <queue> 
+#include<vector>
 using namespace std;
-vector<int> di = {-1, 1, 0, 0}; 
-vector<int> dj = {0, 0, -1, 1};
-struct State{
-    int i, j; 
-    int depth; 
+
+vector<int> dr = {-1, 1 ,0, 0}; 
+vector<int> dc = {0, 0, -1, 1}; 
+struct Pos{
+    int r, c, depth; 
 };
-int bfs(int n, int m, vector<vector<int>>& maps){
-    queue<State> q; 
-    vector<vector<bool>> v(n, vector<bool>(m, false));
-    q.push({0, 0, 1}); // 시작점 
+int solution(vector<vector<int> > maps)
+{
+    int n = maps.size(); // r size
+    int m = maps[0].size(); // c size 
+    // r, c, depth 
+    queue<Pos> q; 
+    q.push({0, 0, 1}); 
+    vector<vector<bool>> v(n, vector<bool>(m, false)); 
     v[0][0] = true; 
-    
-    bool able = false; 
+    int answer = -1; 
     while(!q.empty()){
-        State cur = q.front(); 
-        int ci = cur.i, cj = cur.j;
-        int cd = cur.depth; 
-        if(ci == n-1 && cj == m-1){
-            able = true; 
-            return cd; 
+        Pos cur = q.front(); q.pop(); 
+        int r = cur.r, c = cur.c, depth = cur.depth; 
+        if(r == n-1 && c == m-1){
+            answer = depth; 
+            break;
         }
-        q.pop(); 
         for(int d=0; d<4; d++){
-            int ni = ci + di[d]; 
-            int nj = cj + dj[d];
-            if(ni<0 || ni>=n || nj<0 || nj>=m) continue; 
-            if(v[ni][nj]) continue;
-            if(maps[ni][nj] == 1){ // 벽이 없으면 
-                v[ni][nj] = true; 
-                q.push({ni, nj, cd+1});        
-            }
+            int nr = r + dr[d]; 
+            int nc = c + dc[d];
+            if(nr<0 || nr>=n || nc<0 || nc>=m) continue; 
+            if(v[nr][nc] || maps[nr][nc] == 0) continue; 
+            q.push({nr, nc, depth+1}); 
+            v[nr][nc] = true; 
         }
     }
-    if(!able) return -1; 
     
-}
-
-int solution(vector<vector<int>> maps)
-{
-    int n = maps.size(); 
-    int m = maps[0].size(); 
-    int answer = bfs(n, m, maps);
     return answer;
 }
-
 /*
-1,1에서 시작해서 n,m로 가는데 최단 경로가 필요함 
-가중치가 다 똑같으니까 bfs 
-
+지나가야 하는 칸의 개수 최솟값 
+bfs 
+도착 불가 -> -1 출력 
+0은 벽 1은 길 
+출발: 0,0 
+도착: n-1, m-1 
 */
